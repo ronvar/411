@@ -1,3 +1,4 @@
+import os
 import spotipy
 from spotipy import util
 import requests
@@ -10,6 +11,11 @@ from pymongo import MongoClient   #docs: http://api.mongodb.com/python/current/i
 import config
 import json
 import sys
+from werkzeug.utils import secure_filename
+
+#file upload requirements
+UPLOAD_FOLDER = './imageuploads'
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
 #-- AZURE REQUIREMENTS --#
 azureheaders = {
@@ -41,7 +47,10 @@ db = client.database
 songs = db.songs
 users = db.users
 username = ''
+
+
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.secret_key = b'w49tgunw4*&G#Er3jifg'
 
 def getemotions():
@@ -267,3 +276,28 @@ def createplaylist(token, username):
         return render_template('myplaylist.html', name = username, loggedIn = True, palylisturis = selected_tracks_uri, artists = selected_tracks_artist, names = selected_tracks_names)
     else:
         print('...theres been an error authenticating the user')
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/upload', methods=['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['file']
+        # if user does not select file, browser also
+        # submit a empty part without filename
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return redirect(url_for('uploaded_file',
+                                    filename=filename))
+    return
