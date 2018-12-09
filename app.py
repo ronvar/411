@@ -68,21 +68,20 @@ def getemotions():
             print(r.json())
             print(overpowered_emotion)
             return overpowered_emotion
+    except:
+        print('unable to pull emotions from image')
+        
+    if len(sys.argv) > 1:
+        mood = float(sys.argv[2])
+    else: 
+        print("Usage: %s username" % (sys.argv[0],))
+        sys.exit()
 
-
-loggedin = False
-if len(sys.argv) > 1:
-    mood = float(sys.argv[2])
-else: 
-    print("Usage: %s username" % (sys.argv[0],))
-    sys.exit()
-
-
-if token:
-    def authenticate():
-        print('...now connecting to spotify')
-        sp = spotipy.Spotify(auth=token)
-        return sp
+    if token:
+        def authenticate():
+            print('...now connecting to spotify')
+            sp = spotipy.Spotify(auth=token)
+            return sp
 
     def getpersonalizedartists(sp):
         print('...now getting your personalized artists')
@@ -156,12 +155,13 @@ if token:
 #main index page
 @app.route('/')
 def main():
-    return render_template('index.html')
+    return render_template('dashboard.html')
 
 
 #login using spotify oauth
-@app.route('/login', methods=['POST'])
+@app.route('/login/')
 def login():
+    return render_template('dashboard.html')
     username = request.form['username']
     token = util.prompt_for_user_token(username, scope, client_id, client_secret, redirect_uri)
     if token:
