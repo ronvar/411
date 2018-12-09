@@ -205,7 +205,7 @@ def main():
 
 
 #login using spotify oauth
-@app.route('/login/', methods=['POST'])
+@app.route('/login/', methods=['GET'])
 def login():
     return render_template('dashboard.html')
     username = request.form['username']
