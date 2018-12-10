@@ -171,9 +171,8 @@ def about():
 def index():
     return render_template('index.html')
 #login using spotify oauth
-@app.route('/login')
+@app.route('/login/')
 def login():
-    return render_template('dashboard.html')
     username = request.form['username']
     token = util.prompt_for_user_token(username, scope, client_id, client_secret, redirect_uri)
     if token:
