@@ -12,6 +12,7 @@ import config
 import json
 import sys
 from werkzeug.utils import secure_filename
+from PIL import Image
 
 #file upload requirements
 UPLOAD_FOLDER = './imageuploads'
@@ -49,6 +50,7 @@ users = db.users
 username = ''
 mood = 0.0
 loggedin = False
+image = None
 
 
 app = Flask(__name__)
@@ -117,7 +119,7 @@ def getemotions():
         print(r.status_code)
         if (r.status_code == 200):
             res = r.json()
-            emotions = res[0].faceAttributes.emotion
+            emotions = res[0]['faceAttributes']['emotion']
             overpowered_emotion = 0.0
             for i in emotions:
                 if emotions[i] > overpowered_emotion:
@@ -237,19 +239,20 @@ def upload_file():
         # check if the post request has the file part
         if 'file' not in request.files:
             flash('No file part')
-            return redirect(request.url)
-        file = request.files['file']
+            return redirect('dashboard.html')
+        file = request.files['image']
         # if user does not select file, browser also
         # submit a empty part without filename
         if file.filename == '':
             flash('No selected file')
-            return redirect(request.url)
+            return redirect('dashboard.html')
         if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('uploaded_file',
-                                    filename=filename))
-    return
+            faceimage = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], faceimage))
+            image = Image.open('static/buf.jpeg')
+            return redirect(url_for('/getplaylist',
+                                    filename=faceimage, image=image))
+    return 
 
 @app.route('/logout')
 def logout():
