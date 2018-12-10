@@ -79,8 +79,7 @@ def gotohistory():
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
     username = request.form['username']
-    token = util.prompt_for_user_token(username, scope, client_id, client_secret, redirect_uri)
-    return render_template('dashboard.html')
+    token = 'AQBiryfV0rQwpohKmycD2-Rjf0FtXNpTAKbSuEUE14VH8X_h3Lt8j8tVsyAbQe4btio6SXX_UlUgIceHkrKkI9jCBuYqMdqXxS1JGlyNb_ec6oRRyDIQ5UnBUXKE6XzWddleR2eHU_ZUUgGsCqUpy1-iIBWaVSjn_AZdkln4q4ggjpx6qncICeeJcYcJ_j0bBu3auH1T2U8Al2uUm2JzMqzMu8zGYZbOxgYW8fRZzv3iitWq-axUDCdkyubrExhZCEXKbqo1pqLs0ps6WXHa-75AwyjpLELsGYs'
     print('...got token')
     if token:
         def authenticate(): #authenticate user using spotify
@@ -97,7 +96,7 @@ def login():
         return render_template('dashboard.html', name = user['username'], loggedIn = True)
     else:
         details = {'username': username} 
-        db.users.insert_one(username)
+        db.users.insert_one(details)
         loggedin = True
         print('...successfully created user')
         return render_template('dashboard.html', name=username, loggedIn = True)
