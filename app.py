@@ -79,7 +79,7 @@ def gotohistory():
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
     username = request.form['username']
-    token = 'AQBiryfV0rQwpohKmycD2-Rjf0FtXNpTAKbSuEUE14VH8X_h3Lt8j8tVsyAbQe4btio6SXX_UlUgIceHkrKkI9jCBuYqMdqXxS1JGlyNb_ec6oRRyDIQ5UnBUXKE6XzWddleR2eHU_ZUUgGsCqUpy1-iIBWaVSjn_AZdkln4q4ggjpx6qncICeeJcYcJ_j0bBu3auH1T2U8Al2uUm2JzMqzMu8zGYZbOxgYW8fRZzv3iitWq-axUDCdkyubrExhZCEXKbqo1pqLs0ps6WXHa-75AwyjpLELsGYs'
+    token = config.token
     print('...got token')
     if token:
         def authenticate(): #authenticate user using spotify
