@@ -1,47 +1,3 @@
-# @app.route("/")
-# def main():
-# 	header = {
-# 		"content-type":"application/json"
-# 	}
-
-# 	cap = cv2.VideoCapture(0)
-# 	ret, frame = cap.read()
-# 	payload = {
-# 		"frame_b64": frame.tolist(),
-# 		"name": "Minh"
-# 	}
-
-# 	client = MongoClient()
-
-# 	db = client.pymongo_test
-
-# 	while(True):
-# 		# Capture frame-by-frame
-# 		ret, frame = cap.read()
-
-# 		# Our operations on the frame come here
-# 		cv2.imwrite("./buf.jpeg", frame)
-# 		with open("buf.jpeg", "rb") as f:
-# 			payload["frame_b64"] = base64.b64encode(f.read())
-
-# 		# requests.post(url=url, headers=header, data=json.dumps(payload))
-# 		with open("decoded.jpeg", "wb+") as g:
-# 			g.write(base64.b64decode(payload["frame_b64"]))
-# 		dbs = db.tinder4BU
-# 		dbs.insert_one(payload)
-# 		# Display the resulting frame
-# 		# decoded = cv2.imread("decoded.jpeg")
-# 		# cv2.imshow('frame',frame)
-# 		# cv2.imshow('decoded',decoded)
-# 		if cv2.waitKey(1) & 0xFF == ord('q'):
-# 			break
-# 		time.sleep(0.1)
-# 		break
-# 	# When everything done, release the capturing device
-# 	cap.release()
-# 	cv2.destroyAllWindows()
-# 	return
-
 import os
 import spotipy
 from spotipy import util
@@ -56,8 +12,6 @@ import config
 import json
 import sys
 from werkzeug.utils import secure_filename
-
-app = Flask(__name__)
 
 #file upload requirements
 UPLOAD_FOLDER = './imageuploads'
@@ -93,43 +47,140 @@ db = client.database
 songs = db.songs
 users = db.users
 username = ''
+mood = 0.0
+loggedin = False
 
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.secret_key = b'w49tgunw4*&G#Er3jifg'
 
+def getemotions():
+    print('... getting emotions from image')
+    try:
+        r = requests.post(azure_api, headers = azureheaders, qs = azure_qs, body = azure_body, json = True)
+        print(r.status_code)
+        if (r.status_code == 200):
+            res = r.json()
+            emotions = res[0].faceAttributes.emotion
+            overpowered_emotion = 0.0
+            for i in emotions:
+                if emotions[i] > overpowered_emotion:
+                    overpowered_emotion = emotions[i]
+            print(r.json())
+            print(overpowered_emotion)
+            return overpowered_emotion
+    except:
+        print('unable to pull emotions from image')
+        
+    if len(sys.argv) > 1:
+        mood = float(sys.argv[2])
+    else: 
+        print("Usage: %s username" % (sys.argv[0],))
+        sys.exit()
+
+    if token:
+        def authenticate():
+            print('...now connecting to spotify')
+            sp = spotipy.Spotify(auth=token)
+            return sp
+
+    def getpersonalizedartists(sp):
+        print('...now getting your personalized artists')
+        top_artists_name = []
+        top_artists_uri = []
+        ranges = ['short_term','medium_term','long_term']
+        for r in ranges:
+            top_artists_all_data = sp.current_user_top_artists(limit=60, time_range = r)
+            top_artists_data = top_artists_all_data['items']
+            for artist_data in top_artists_data:
+                if artist_data["name"] not in top_artists_name:
+                    top_artists_name.append(artist_data['name'])
+                    top_artists_uri.append(artist_data['uri'])
+        followed_artists_all_data = sp.current_user_followed_artists(limit= 60)
+        followed_artists_data = (followed_artists_all_data['artists'])
+        for artist_data in followed_artists_data['artists']:
+            if artist_data["name"] not in top_artists_name:
+                top_artists_name.append(artist_data['name'])
+                top_artists_uri.append(artist_data['uri'])
+        return top_artists_uri
+
+    def aggregate_top_tracks(sp, top_artists_uri):
+        print('...now getting personalized tracks')
+        top_tracks_uri = []
+        for artist in top_artists_uri:
+            top_tracks_all_data = sp.artist_top_tracls(artist)
+            top_tracks_data = top_tracks_all_data['tracks']
+            for track_data in top_tracks_data:
+                top_tracks_uri.append(track_data['uri'])
+        return top_tracks_uri
+
+    def select_tracks(sp, top_tracks_uri):
+        print('...now selecting tracks based on mood')
+        selected_tracks_uri = []
+        random.shuffle(top_tracks_uri)
+        for tracks in list(group(top_tracks_uri, 60)):
+            tracks_all_data = sp.audio_features(tracks)
+            for track_data in tracks_all_data:
+                try:
+                    if mood < 0.10: #feeling really bad
+                        if (0 <= track_data["valence"] <= (mood + 0.15) and track_data["danceability"] <= (mood * 8) and track_data["energy"] <= (mood * 10)):
+                            selected_tracks_uri.append(track_data["uri"])
+                    elif 0.10 <= mood < 0.25:
+                        if ((mood - 0.075) <= track_data["valence"] <= (mood + 0.075) and track_data["danceability"] <= (mood * 4) and track_data["energy"] <= (mood * 5)):
+                            selected_tracks_uri.append(track_data["uri"])
+                    elif 0.25 <= mood < 0.5:
+                        if ((mood - 0.05) <= track_data["valence"] <= (mood + 0.05) and track_data["danceability"] <= (mood * 1.75) and track_data["energy"] <= (mood * 1.75)):
+                            selected_tracks_uri.append(track_data["uri"])
+                    elif 0.5 <= mood < 0.75:
+                        if ((mood - 0.075) <= track_data["valence"] <= (mood + 0.075) and track_data["danceability"] >= (mood / 2.5) and track_data["energy"] >= (mood / 2)):
+                            selected_tracks_uri.append(track_data["uri"])
+                    elif 0.75 <= mood < 0.9:
+                        if ((mood - 0.075) <= track_data["valence"] <= (mood + 0.075) and track_data["danceability"] >= (mood / 2) and track_data["energy"] >= (mood / 1.75)):
+                            selected_tracks_uri.append(track_data["uri"])
+                    elif mood >= 0.9:
+                        if ((mood - 0.15) <= track_data["valence"] <= 1 and track_data["danceability"] >= (mood / 1.75) and track_data["energy"] >= (mood / 1.5)):                            selected_tracks_uri.append(track_data["uri"])
+                except TypeError as te:
+                        continue
+        return selected_tracks_uri
+
+    def create_playlist(sp, selected_tracks_uri):
+        print('... now creating your playlist')
+        user_all_data = sp.current_user()
+        user_id = user_all_data["id"]
+        playlist_all_data = sp.user_playlist_create(user_id, "Big Mood: " + mood)
+        playlist_id = playlist_all_data["id"]
+        random.shuffle(selected_tracks_uri)
+        sp.user_playlist_add_tracks(user_id, playlist_id, selected_tracks_uri[0:30])
+
 
 #main index page
 @app.route('/')
-def main():
-    return render_template('dashboard.html')
+def gotomain():
+    return render_template('index.html')
 
 
 #login using spotify oauth
-@app.route('/login/', methods=['GET'])
+@app.route('/login/')
 def login():
-    return render_template('dashboard.html')
     username = request.form['username']
     token = util.prompt_for_user_token(username, scope, client_id, client_secret, redirect_uri)
     if token:
         def authenticate(): #authenticate user using spotify
             print('...now connecting to spotify')
             sp = spotipy.Spotify(auth=token)
-    #grab username to create/lookup account
-    username = ''
     if db.users.find_one({'username':username}):
         print('user exists! getting history')
         user = db.users.find_one({'username': username})
         session['username'] = user['username']
         loggedin = True
-        return render_template('dashboard.html', name = user['username'], loggedIn = True)
+        return render_template('dashboard.html', name = user['username'])
     else:
         details = {'username': username} 
         db.users.insert_one(username)
         loggedin = True
         print('...successfully created user')
-        return render_template('dashboard.html', name=username, loggedIn = True)
+        return render_template('dashboard.html', name=username)
     print('')
 
 @app.route('/history', methods=['GET'])
@@ -140,7 +191,38 @@ def gethistory():
     return render_template('history.html', error = True, error_message = "User it not logged in")
 
 @app.route('/getplaylist', methods=['POST'])
-def createplaylist(token, username):
+def getemotions():
+    print('... getting emotions from image')
+    try:
+        r = requests.post(azure_api, headers = azureheaders, qs = azure_qs, body = azure_body, json = True)
+        print(r.status_code)
+        if (r.status_code == 200):
+            res = r.json()
+            emotions = res[0].faceAttributes.emotion
+            overpowered_emotion = 0.0
+            for i in emotions:
+                if emotions[i] > overpowered_emotion:
+                    overpowered_emotion = emotions[i]
+            print(r.json())
+            print(overpowered_emotion)
+            return overpowered_emotion
+    except:
+        print('unable to pull emotions from image')
+def createplaylist(token, username, overpowered_emotion):
+    if overpowered_emotion == 'happiness':
+        mood = 1.0
+    elif overpowered_emotion == 'surprise':
+        mood = 0.7
+    elif overpowered_emotion == 'neutral':
+        mood = 0.5
+    elif overpowered_emotion == 'contempt':
+        mood = 0.4
+    elif overpowered_emotion == 'fear':
+        mood = 0.3
+    elif overpowered_emotion == 'sadness':
+        mood = 0.2
+    elif overpowered_emotion == 'disgust':
+        mood = 0.1
     if (token and loggedin and db.users.find_one({'username': username})):
         #get personalized artists for playlist
         print('...now getting your personalized artists')
