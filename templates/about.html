@@ -49,7 +49,7 @@
       <div class="row pt-5">
         <div class="col-12 text-center">
           <a class="absolute-toggle d-block d-md-none" data-toggle="collapse" href="#navbarMenu" role="button" aria-expanded="false" aria-controls="navbarMenu"><span class="burger-lines"></span></a>
-          <h1 class="site-logo"><a href="index.html">Emotional Playlist</a></h1>
+          <h1 class="site-logo"><a href="./templates/index.html">Emotional Playlist</a></h1>
           <h3 class="site-logo">create a playlist in 3 easy steps</h3>
         </div>
       </div>
@@ -62,13 +62,13 @@
         <div class="collapse navbar-collapse" id="navbarMenu">
           <ul class="navbar-nav mx-auto">
             <li class="nav-item">
-              <a class="nav-link active" href="index.html">Home</a>
+              <a class="nav-link active" href={{ url_for('index') }}>Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="about.html">About</a>
+              <a class="nav-link" href={{ url_for('about') }}>About</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="contact.html">Login</a>
+              <a class="nav-link" href={{ url_for('gotologin') }}>Login</a>
             </li>
           </ul>
 
@@ -88,7 +88,7 @@
             <div class="row">
               <div class="col-md-12">
                 <h2 class="mb-4">Hi There! I'm Meagan Smith</h2>
-                <p class="mb-5"><img src="images/img_6.jpg" alt="Image placeholder" class="img-fluid"></p>
+                <p class="mb-5"><img src="../static/images/img_6.jpg" alt="Image placeholder" class="img-fluid"></p>
                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsum minima eveniet recusandae suscipit eum laboriosam fugit amet deleniti iste et. Ad dolores, necessitatibus non saepe tenetur impedit commodi quibusdam natus repellat, exercitationem accusantium perferendis officiis. Laboriosam impedit quia minus pariatur!</p>
                 <p>Dignissimos iste consectetur, nemo magnam nulla suscipit eius quibusdam, quo aperiam quia quae est explicabo nostrum ab aliquid vitae obcaecati tenetur beatae animi fugiat officia id ipsam sint? Obcaecati ea nisi fugit assumenda error totam molestiae saepe fugiat officiis quam?</p>
                 <p>Culpa porro quod doloribus dolore sint. Distinctio facilis ullam voluptas nemo voluptatum saepe repudiandae adipisci officiis, explicabo eaque itaque sed necessitatibus, fuga, ea eius et aliquam dignissimos repellendus impedit pariatur voluptates. Dicta perferendis assumenda, nihil placeat, illum quibusdam. Vel, incidunt?</p>
@@ -125,7 +125,7 @@
           <div class="col-md-4">
             <h3>Paragraph</h3>
             <p>
-              <img src="images/img_1.jpg" alt="Image placeholder" class="img-fluid">
+              <img src="../static/images/img_1.jpg" alt="Image placeholder" class="img-fluid">
             </p>
 
             <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nisi, accusantium optio unde perferendis eum illum voluptatibus dolore tempora, consequatur minus asperiores temporibus reprehenderit.</p>
@@ -138,7 +138,7 @@
                 <ul>
                     <li>
                       <a href="">
-                        <img src="images/img_6.jpg" alt="Image placeholder" class="mr-4">
+                        <img src="../static/images/img_6.jpg" alt="Image placeholder" class="mr-4">
                         <div class="text">
                           <h4>There’s a Cool New Way for Men to Wear Socks and Sandals</h4>
                           <div class="post-meta">
@@ -150,7 +150,7 @@
                     </li>
                     <li>
                       <a href="">
-                        <img src="images/img_3.jpg" alt="Image placeholder" class="mr-4">
+                        <img src="../static/images/img_3.jpg" alt="Image placeholder" class="mr-4">
                         <div class="text">
                           <h4>There’s a Cool New Way for Men to Wear Socks and Sandals</h4>
                           <div class="post-meta">
@@ -162,7 +162,7 @@
                     </li>
                     <li>
                       <a href="">
-                        <img src="images/img_4.jpg" alt="Image placeholder" class="mr-4">
+                        <img src="../static/images/img_4.jpg" alt="Image placeholder" class="mr-4">
                         <div class="text">
                           <h4>There’s a Cool New Way for Men to Wear Socks and Sandals</h4>
                           <div class="post-meta">

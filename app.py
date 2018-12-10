@@ -159,7 +159,13 @@ def getemotions():
 def gotomain():
     return render_template('index.html')
 
+@app.route('/gotologin')
+def gotologin():
+    return render_template('contact.html')
 
+@app.route('/about')
+def about():
+    return render_template('about.html')
 #login using spotify oauth
 @app.route('/login')
 def login():
