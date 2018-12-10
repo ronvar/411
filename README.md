@@ -6,6 +6,6 @@
 - flask run
 
 ### What to modify/where to put it
-- For css stuff, put it in the css folder and just refer to it accordingly in the html (this may be wrong, Flask might be some fancy stuff)
+- For css stuff, put it in static folder under its respective directory, and reference it according to how it's done in index.html
 - For html stuff, put it in the templates folder, as that's what Flask looks for and pulls from
-- Any backend stuff just put it in the index.py
+- Any backend stuff just put it in app.py
