@@ -84,9 +84,12 @@
           <div class="col-md-12 col-lg-8 main-content">
             <div class="post-content-body">
             <div class="row mb-5">
-              <div class="col-md-12 mb-4 element-animate">
-                <img src="images/img_7.jpg" alt="Image placeholder" class="img-fluid">
+              <div id="recorder">
+                <button id="record">Capture</button>
+                <a id="download"></a>
+                <script type="text/javascript" src="{{ url_for('static', filename='recorder.js') }}"></script>      
               </div>
+              <img id="video" src="{{ url_for('video_viewer') }}">
               <div class="col-md-6 mb-4 element-animate">
                 <img src="images/img_9.jpg" alt="Image placeholder" class="img-fluid">
               </div>
