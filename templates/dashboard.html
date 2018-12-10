@@ -85,13 +85,13 @@
             <div class="post-content-body">
             <div class="row mb-5">
               <div class="col-md-12 mb-4 element-animate">
-                <img src="images/img_7.jpg" alt="Image placeholder" class="img-fluid">
+                <img src="{{ url_for('static',filename='images/img_7.jpg')}}" alt="Image placeholder" class="img-fluid">
               </div>
               <div class="col-md-6 mb-4 element-animate">
-                <img src="images/img_9.jpg" alt="Image placeholder" class="img-fluid">
+                <img src="{{ url_for('static',filename='images/img_9.jpg')}}" alt="Image placeholder" class="img-fluid">
               </div>
               <div class="col-md-6 mb-4 element-animate">
-                <img src="images/img_11.jpg" alt="Image placeholder" class="img-fluid">
+                <img src="{{ url_for('static',filename='images/img_11.jpg')}}" alt="Image placeholder" class="img-fluid">
               </div>
             </div>
               
@@ -122,7 +122,7 @@
         </div>
         <div class="row">
           <div class="col-md-6 col-lg-4">
-            <a href="#" class="a-block d-flex align-items-center height-md" style="background-image: url('images/img_2.jpg'); ">
+            <a href="#" class="a-block d-flex align-items-center height-md" style="background-image: url('{{ url_for('static',filename='images/img_2.jpg')}}'); ">
               <div class="text">
                 <div class="post-meta">
                   <span class="category">Lifestyle</span>
@@ -134,7 +134,7 @@
             </a>
           </div>
           <div class="col-md-6 col-lg-4">
-            <a href="#" class="a-block d-flex align-items-center height-md" style="background-image: url('images/img_3.jpg'); ">
+            <a href="#" class="a-block d-flex align-items-center height-md" style="background-image: url('{{ url_for('static',filename='images/img_3.jpg')}}'); ">
               <div class="text">
                 <div class="post-meta">
                   <span class="category">Travel</span>
@@ -146,7 +146,7 @@
             </a>
           </div>
           <div class="col-md-6 col-lg-4">
-            <a href="#" class="a-block d-flex align-items-center height-md" style="background-image: url('images/img_4.jpg'); ">
+            <a href="#" class="a-block d-flex align-items-center height-md" style="background-image: url('{{ url_for('static',filename='images/img_4.jpg')}}'); ">
               <div class="text">
                 <div class="post-meta">
                   <span class="category">Food</span>
@@ -169,7 +169,7 @@
         <div class="row mb-5">
           <div class="col-md-4">
             <h3>Paragraph</h3>
-            <img src="images/img_1.jpg" alt="Image placeholder" class="img-fluid">
+            <img src="{{ url_for('static',filename='images/img_1.jpg')}}" alt="Image placeholder" class="img-fluid">
             <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nisi, accusantium optio unde perferendis eum illum voluptatibus dolore tempora, consequatur minus asperiores temporibus reprehenderit.</p>
           </div>
           <div class="col-md-6 ml-auto">
@@ -180,7 +180,7 @@
                 <ul>
                     <li>
                       <a href="">
-                        <img src="images/img_6.jpg" alt="Image placeholder" class="mr-4">
+                        <img src="{{ url_for('static',filename='images/img_6.jpg')}}" alt="Image placeholder" class="mr-4">
                         <div class="text">
                           <h4>There’s a Cool New Way for Men to Wear Socks and Sandals</h4>
                           <div class="post-meta">
@@ -192,7 +192,7 @@
                     </li>
                     <li>
                       <a href="">
-                        <img src="images/img_3.jpg" alt="Image placeholder" class="mr-4">
+                        <img src="{{ url_for('static',filename='images/img_3.jpg')}}" alt="Image placeholder" class="mr-4">
                         <div class="text">
                           <h4>There’s a Cool New Way for Men to Wear Socks and Sandals</h4>
                           <div class="post-meta">
@@ -204,7 +204,7 @@
                     </li>
                     <li>
                       <a href="">
-                        <img src="images/img_4.jpg" alt="Image placeholder" class="mr-4">
+                        <img src="{{ url_for('static',filename='images/img_4.jpg')}}" alt="Image placeholder" class="mr-4">
                         <div class="text">
                           <h4>There’s a Cool New Way for Men to Wear Socks and Sandals</h4>
                           <div class="post-meta">
