@@ -156,8 +156,8 @@ def getemotions():
 
 #main index page
 @app.route('/')
-def main():
-    return render_template('dashboard.html')
+def gotomain():
+    return render_template('index.html')
 
 
 #login using spotify oauth
@@ -186,14 +186,14 @@ def login():
         return render_template('dashboard.html', name=username, loggedIn = True)
     print('')
 
-@app.route('/history', method=['GET'])
+@app.route('/history', methods=['GET'])
 def gethistory():
     if (loggedin and db.users.find_one({'username': username})):
         history = db.history.find_one({'username': username}) #should return all songs
         return render_template('history.html', name = username, loggedIn = True, history = history)
     return render_template('history.html', error = True, error_message = "User it not logged in")
 
-@app.route('/getplaylist', methodd=['POST'])
+@app.route('/getplaylist', methods=['POST'])
 def getemotions():
     print('... getting emotions from image')
     try:
