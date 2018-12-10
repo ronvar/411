@@ -45,7 +45,7 @@
         <div class="row pt-5">
           <div class="col-12 text-center">
             <a class="absolute-toggle d-block d-md-none" data-toggle="collapse" href="#navbarMenu" role="button" aria-expanded="false" aria-controls="navbarMenu"><span class="burger-lines"></span></a>
-            <h1><a href="index.html">My Dashboard</a></h1>
+            <h1><a href={{ url_for('index') }}>My Dashboard</a></h1>
           </div>
         </div>
       </div>
@@ -57,16 +57,16 @@
           <div class="collapse navbar-collapse" id="navbarMenu">
             <ul class="navbar-nav mx-auto">
               <li class="nav-item">
-                <a class="nav-link active" href="index.html">Home</a>
+                <a class="nav-link active" href={{ url_for('index') }}>Home</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="about.html">About</a>
+                <a class="nav-link" href={{ url_for('about') }}>About</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="history.html">My History</a>
+                <a class="nav-link" href={{ url_for('history') }}>My History</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="index.html">Logout</a>
+                <a class="nav-link" href={{ url_for('logout') }}>Logout</a>
               </li>
             </ul>
             
