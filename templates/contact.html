@@ -87,19 +87,18 @@
         <div class="row blog-entries ml-auto">
           <div class="col-md-12 col-lg-8 main-content ml-auto">
             
-            <form method="POST">
+            <form method="POST" action="/login">
               <div class="row">
                 <div class="col-md-4 form-group">
                   <label for="username">Username</label>
-                  <input type="text" name="username" class="form-control">
+                  <input type="text" class="form-control" placeholder="Spotify Username" name="username">
                 </div>
               </div>
-            </form>
-            <div class="row">
               <div class="col-md-6 form-group">
-                <a href={{ url_for('login') }} class="btn btn-primary">Login with Spotify</a>
+                  <button class="btn btn-primary" type="submit">Login with Spotify</a>
               </div>
-            </div>
+            </form>
+            
             
 
           </div>

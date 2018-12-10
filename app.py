@@ -72,18 +72,21 @@ def about():
 @app.route('/index')
 def index():
     return render_template('index.html')
+@app.route('/gotohistory')
+def gotohistory():
+    return render_template('history.html')
 #login using spotify oauth
-
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
     username = request.form['username']
-    return render_template('dashboard.html')
     token = util.prompt_for_user_token(username, scope, client_id, client_secret, redirect_uri)
+    return render_template('dashboard.html')
     print('...got token')
     if token:
         def authenticate(): #authenticate user using spotify
             print('...now connecting to spotify')
             sp = spotipy.Spotify(auth=token)
+        authenticate()
     print('...authenticated')
     #grab username to create/lookup account
     if db.users.find_one({'username':username}):
@@ -101,7 +104,7 @@ def login():
     print('')
 
 @app.route('/history', methods=['GET'])
-def gethistory():
+def history():
     if (loggedin and db.users.find_one({'username': username})):
         history = db.history.find_one({'username': username}) #should return all songs
         return render_template('history.html', name = username, loggedIn = True, history = history)
