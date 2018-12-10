@@ -47,6 +47,8 @@ db = client.database
 songs = db.songs
 users = db.users
 username = ''
+mood = 0.0
+loggedin = False
 
 
 app = Flask(__name__)
@@ -159,7 +161,7 @@ def main():
 
 
 #login using spotify oauth
-@app.route('/login/')
+@app.route('/login')
 def login():
     return render_template('dashboard.html')
     username = request.form['username']
@@ -192,7 +194,38 @@ def gethistory():
     return render_template('history.html', error = True, error_message = "User it not logged in")
 
 @app.route('/getplaylist', methodd=['POST'])
-def createplaylist(token, username):
+def getemotions():
+    print('... getting emotions from image')
+    try:
+        r = requests.post(azure_api, headers = azureheaders, qs = azure_qs, body = azure_body, json = True)
+        print(r.status_code)
+        if (r.status_code == 200):
+            res = r.json()
+            emotions = res[0].faceAttributes.emotion
+            overpowered_emotion = 0.0
+            for i in emotions:
+                if emotions[i] > overpowered_emotion:
+                    overpowered_emotion = emotions[i]
+            print(r.json())
+            print(overpowered_emotion)
+            return overpowered_emotion
+    except:
+        print('unable to pull emotions from image')
+def createplaylist(token, username, overpowered_emotion):
+    if overpowered_emotion == 'happiness':
+        mood = 1.0
+    elif overpowered_emotion == 'surprise':
+        mood = 0.7
+    elif overpowered_emotion == 'neutral':
+        mood = 0.5
+    elif overpowered_emotion == 'contempt':
+        mood = 0.4
+    elif overpowered_emotion == 'fear':
+        mood = 0.3
+    elif overpowered_emotion == 'sadness':
+        mood = 0.2
+    elif overpowered_emotion == 'disgust':
+        mood = 0.1
     if (token and loggedin and db.users.find_one({'username': username})):
         #get personalized artists for playlist
         print('...now getting your personalized artists')
