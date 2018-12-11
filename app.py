@@ -126,8 +126,15 @@ def getemotions():
         BASE_URL = 'https://westus.api.cognitive.microsoft.com/face/v1.0/detect'  # Replace with your regional Base URL
         CF.BaseUrl.set(BASE_URL)
 
-        img_url = 'https://pbs.twimg.com/profile_images/1034484319866302472/O8nhACsb_400x400.jpg'
+        img_url = './static/buf.jpg'
         result = CF.face.detect(img_url)
+        moods = result[0]['faceAttributes']['emotion']
+        moodsy = 0.0
+        overpowered_emotion = ''
+        for i in moods:
+            if moods[i] > moodsy:
+                moodsy = moods[i]
+                overpowered_emotion = i
     except:
         print('unable to pull emotions from image')
 def createplaylist(token, username, overpowered_emotion):
