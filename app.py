@@ -55,7 +55,7 @@ username = ''
 mood = 0.0
 loggedin = False
 image = None
-
+token = config.token
 
 
 app = Flask(__name__)
@@ -119,24 +119,36 @@ def history():
 @app.route('/getplaylist', methods=['GET'])
 def getemotions():
     print('... getting emotions from image')
-    try:
-        KEY = config.AzureAPIKey  # Replace with a valid Subscription Key here.
-        CF.Key.set(KEY)
+    KEY = config.AzureAPIKey  # Replace with a valid Subscription Key here.
+    CF.Key.set(KEY)
+    print('...set key')
+    BASE_URL = 'https://eastus.api.cognitive.microsoft.com/face/v1.0/'  # Replace with your regional Base URL
+    CF.BaseUrl.set(BASE_URL)
+    print('...set the url')
+    img = './static/buf.jpeg'
+    print('...opened image')
+    result = CF.face.detect(img, attributes='emotion')
+    print('...got some results')
+    print(result)
+    moods = result[0]['faceAttributes']['emotion']
+    print('...printing moods')
+    print(moods)
+    db.moods.insert_one(moods)
+    moodsy = 0.0
+    overpowered_emotion = ''
+    iteration_count = 0
+    for key in moods:
+        if iteration_count == 8: # Cognitive face api is broken 
+            break
+        print(key)
+        if moods[key] > moodsy:
+            moodsy = moods[key]
+            overpowered_emotion = key
+        
+        iteration_count += 1
+    print('overpowered_emotion: ', overpowered_emotion)
+    return createplaylist(token, username, overpowered_emotion)
 
-        BASE_URL = 'https://westus.api.cognitive.microsoft.com/face/v1.0/detect'  # Replace with your regional Base URL
-        CF.BaseUrl.set(BASE_URL)
-
-        img_url = './static/buf.jpg'
-        result = CF.face.detect(img_url)
-        moods = result[0]['faceAttributes']['emotion']
-        moodsy = 0.0
-        overpowered_emotion = ''
-        for i in moods:
-            if moods[i] > moodsy:
-                moodsy = moods[i]
-                overpowered_emotion = i
-    except:
-        print('unable to pull emotions from image')
 def createplaylist(token, username, overpowered_emotion):
     if overpowered_emotion == 'happiness':
         mood = 1.0
@@ -232,7 +244,7 @@ def createplaylist(token, username, overpowered_emotion):
         playlist_id = playlist_all_data["id"]
         random.shuffle(selected_tracks_uri)
         sp.user_playlist_add_tracks(user_id, playlist_id, selected_tracks_uri[0:30]) #playlist can be seen in spotify app
-        return render_template('myplaylist.html', name = username, loggedIn = True, palylisturis = selected_tracks_uri, artists = selected_tracks_artist, names = selected_tracks_names)
+        return render_template('dashboard.html', name = username, loggedIn = True, palylisturis = selected_tracks_uri, artists = selected_tracks_artist, names = selected_tracks_names)
     else:
         print('...theres been an error authenticating the user')
 
