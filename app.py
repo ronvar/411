@@ -15,6 +15,7 @@ from werkzeug.utils import secure_filename
 from PIL import Image
 import cognitive_face as CF 
 from camera import VideoCamera
+from datetime import datetime
 video_camera = None
 global_frame = None
 
@@ -175,6 +176,7 @@ def getemotions():
     return createplaylist(overpowered_emotion)
 
 def createplaylist(overpowered_emotion):
+    global mood
     if overpowered_emotion == 'happiness':
         mood = 1.0
     elif overpowered_emotion == 'surprise':
@@ -233,9 +235,6 @@ def createplaylist(overpowered_emotion):
         #select songs based on mood returned
         print('...now selecting tracks based on mood')
         selected_tracks_uri = []
-        selected_tracks_names = []
-        selected_tracks_artist = []
-        selected_tracks_albums = []
         random.shuffle(top_tracks_uri)
         for i in range(len(top_tracks_uri)):
             tracks_all_data = sp.audio_features(top_tracks_uri[i])
@@ -246,54 +245,45 @@ def createplaylist(overpowered_emotion):
                 try:
                     if mood < 0.10: #feeling really bad
                         if (0 <= track_data["valence"] <= (mood + 0.15) and track_data["danceability"] <= (mood * 8) and track_data["energy"] <= (mood * 10)):
-                            selected_tracks_uri.append(top_tracks_uri[i])
-                            selected_tracks_names.append(top_tracks_names[i])
-                            selected_tracks_artist.append(top_tracks_artists[i])
-                            selected_tracks_albums.append(top_tracks_albums[i])
+                            selected_tracks_uri.append(track_data["uri"])
                     elif 0.10 <= mood < 0.25:
                         if ((mood - 0.075) <= track_data["valence"] <= (mood + 0.075) and track_data["danceability"] <= (mood * 4) and track_data["energy"] <= (mood * 5)):
-                            selected_tracks_uri.append(top_tracks_uri[i])
-                            selected_tracks_names.append(top_tracks_names[i])
-                            selected_tracks_artist.append(top_tracks_artists[i])
-                            selected_tracks_albums.append(top_tracks_albums[i])
+                            selected_tracks_uri.append(track_data["uri"])
+
                     elif 0.25 <= mood < 0.5:
                         if ((mood - 0.05) <= track_data["valence"] <= (mood + 0.05) and track_data["danceability"] <= (mood * 1.75) and track_data["energy"] <= (mood * 1.75)):
-                            selected_tracks_uri.append(top_tracks_uri[i])
-                            selected_tracks_names.append(top_tracks_names[i])
-                            selected_tracks_artist.append(top_tracks_artists[i])
-                            selected_tracks_albums.append(top_tracks_albums[i])
+                            selected_tracks_uri.append(track_data["uri"])
+
                     elif 0.5 <= mood < 0.75:
                         if ((mood - 0.075) <= track_data["valence"] <= (mood + 0.075) and track_data["danceability"] >= (mood / 2.5) and track_data["energy"] >= (mood / 2)):
-                            selected_tracks_uri.append(top_tracks_uri[i])
-                            selected_tracks_names.append(top_tracks_names[i])
-                            selected_tracks_artist.append(top_tracks_artists[i])
-                            selected_tracks_albums.append(top_tracks_albums[i])
+                            selected_tracks_uri.append(track_data["uri"])
+
                     elif 0.75 <= mood < 0.9:
                         if ((mood - 0.075) <= track_data["valence"] <= (mood + 0.075) and track_data["danceability"] >= (mood / 2) and track_data["energy"] >= (mood / 1.75)):
-                            selected_tracks_uri.append(top_tracks_uri[i])
-                            selected_tracks_names.append(top_tracks_names[i])
-                            selected_tracks_artist.append(top_tracks_artists[i])
-                            selected_tracks_albums.append(top_tracks_albums[i])
+                            selected_tracks_uri.append(track_data["uri"])
+
                     elif mood >= 0.9:
                         if ((mood - 0.15) <= track_data["valence"] <= 1 and track_data["danceability"] >= (mood / 1.75) and track_data["energy"] >= (mood / 1.5)):
-                            selected_tracks_uri.append(top_tracks_uri[i])
-                            selected_tracks_names.append(top_tracks_names[i])
-                            selected_tracks_artist.append(top_tracks_artists[i])
-                            selected_tracks_albums.append(top_tracks_albums[i])
+                            selected_tracks_uri.append(track_data["uri"])
+
                 except TypeError as te:
                         continue
         #create the actual playlist
         print('... now creating your playlist')
         user_all_data = sp.current_user()
         user_id = user_all_data["id"]
-        playlist_all_data = sp.user_playlist_create(user_id, "Big Mood: " + overpowered_emotion)
+        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        print(current_time)
+        playlist_all_data = sp.user_playlist_create(user_id, "Big Mood: " + ' ' + overpowered_emotion+current_time)
         print('\n\n...printing playlist data...\n\n')
         playlist_id = playlist_all_data["id"]
         print('...printing playlist id')
         print(playlist_all_data)
         random.shuffle(selected_tracks_uri)
-        sp.user_playlist_add_tracks(user_id, playlist_id, selected_tracks_uri[0:30]) #playlist can be seen in spotify app
-        uri = playlist_all_data['owner']['uri']
+        sp.user_playlist_add_tracks(user_id, playlist_id, selected_tracks_uri) #playlist can be seen in spotify app
+        uri = playlist_all_data['external_urls']['spotify']
+        fordb = {'uri': uri}
+        db.playlists.insert_one(fordb)
         #return render_template('dashboard.html', name = username, loggedIn = True, palylisturis = selected_tracks_uri, artists = selected_tracks_artist, names = selected_tracks_names)
         return render_template('myplaylist.html', uri=uri)
     else:

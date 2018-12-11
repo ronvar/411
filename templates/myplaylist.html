@@ -36,10 +36,6 @@
           </div>
           <div class="col-3 search-top">
             <!-- <a href="#"><span class="fa fa-search"></span></a> -->
-            <form action="#" class="search-top-form">
-              <span class="icon fa fa-search"></span>
-              <input type="text" id="s" placeholder="Type keyword to search...">
-            </form>
           </div>
         </div>
       </div>
@@ -50,7 +46,7 @@
         <div class="col-12 text-center">
           <a class="absolute-toggle d-block d-md-none" data-toggle="collapse" href="#navbarMenu" role="button" aria-expanded="false" aria-controls="navbarMenu"><span class="burger-lines"></span></a>
           <h1 class="site-logo"><a href="index.html">Emotional Playlist</a></h1>
-          <h3 class="site-logo">Here's your playlist!</h3>
+          <h3 class="site-logo">Here's your playlist, hope you like it!</h3>
         </div>
       </div>
     </div>
@@ -68,7 +64,7 @@
               <a class="nav-link" href={{ url_for('about') }}>About</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href={{ url_for('gotologout') }}>Logout</a>
+              <a class="nav-link" href={{ url_for('gotologin') }}>Logout</a>
             </li>
           </ul>
 
@@ -81,16 +77,9 @@
 
     <section class="site-section">
       <div class="container">
-          <div class="col-md-4 col-lg-8 ml-auto">
-            <div class="container">
-              <iframe src="https://open.spotify.com/embed/user/efqn4u1rj2zvpehdarvrr8ihl/playlist/1Wf1nfvsONExUPMUgqakjs" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-          </div>
+          <div class="col-lg-12 ml-auto">
+              <iframe src={{ uri}} width="1100" height="780" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
         <div class="row blog-entries ml-auto">
-          <div class="col-md-12 col-lg-8 main-content ml-auto">
-            
-            
-
-          </div>
 
           <!-- END main-content -->
           <!-- END sidebar -->
