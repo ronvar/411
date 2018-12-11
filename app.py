@@ -274,7 +274,7 @@ def createplaylist(overpowered_emotion):
         user_id = user_all_data["id"]
         current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         print(current_time)
-        playlist_all_data = sp.user_playlist_create(user_id, "Big Mood: " + ' ' + overpowered_emotion+current_time)
+        playlist_all_data = sp.user_playlist_create(user_id, "Big Mood: "+ overpowered_emotion+ ' ' + current_time)
         print('\n\n...printing playlist data...\n\n')
         playlist_id = playlist_all_data["id"]
         print('...printing playlist id')
