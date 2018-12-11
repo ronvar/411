@@ -14,9 +14,6 @@ import sys
 from werkzeug.utils import secure_filename
 from PIL import Image
 import cognitive_face as CF 
-
-
-
 from camera import VideoCamera
 video_camera = None
 global_frame = None
@@ -59,7 +56,6 @@ mood = 0.0
 loggedin = False
 image = None
 
-print (result) 
 
 
 app = Flask(__name__)
