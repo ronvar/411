@@ -273,6 +273,7 @@ def snap():
     status = json['status']
     print("taking picture...")
     video_camera.start_record()
+    video_camera = None
     return jsonify(result="started")
 
 def video_stream():
