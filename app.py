@@ -113,6 +113,10 @@ def index():
 @app.route('/gotohistory')
 def gotohistory():
     return render_template('history.html')
+
+@app.route('/tryagain')
+def tryagain():
+    return render_template('dashboard.html')
 #login using spotify oauth
 @app.route('/login', methods = ['POST'])
 def login(username):
