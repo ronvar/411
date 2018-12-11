@@ -13,22 +13,25 @@ import json
 import sys
 from werkzeug.utils import secure_filename
 from PIL import Image
+import cognitive_face as CF 
+
+
 
 #file upload requirements
 UPLOAD_FOLDER = './imageuploads'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
 #-- AZURE REQUIREMENTS --#
-azureheaders = {
-    'Content-Type': 'application/json',
-    'Ocp-Apim-Subscription-Key': config.AzureAPIKey,
-}
-azure_qs = { 
-    'returnFaceAttributes': 'emotion' 
-}
-azure_body = {
-    'url': 'https://pbs.twimg.com/profile_images/1034484319866302472/O8nhACsb_400x400.jpg'
-}
+# azureheaders = {
+#     'Content-Type': 'application/json',
+#     'Ocp-Apim-Subscription-Key': config.AzureAPIKey,
+# }
+# azure_qs = { 
+#     'returnFaceAttributes': 'emotion' 
+# }
+# azure_body = {
+#     'url': 'https://pbs.twimg.com/profile_images/1034484319866302472/O8nhACsb_400x400.jpg'
+# }
 azure_api = 'https://westus.api.cognitive.microsoft.com/face/v1.0/detect'
 
 #-- SPOTIPY REQUIREMENTS --#
@@ -51,6 +54,8 @@ username = ''
 mood = 0.0
 loggedin = False
 image = None
+
+print (result) 
 
 
 app = Flask(__name__)
@@ -111,22 +116,18 @@ def history():
         return render_template('history.html', name = username, loggedIn = True, history = history)
     return render_template('history.html', error = True, error_message = "User it not logged in")
 
-@app.route('/getplaylist', methods=['POST'])
+@app.route('/getplaylist', methods=['GET'])
 def getemotions():
     print('... getting emotions from image')
     try:
-        r = requests.post(azure_api, headers = azureheaders, qs = azure_qs, body = azure_body, json = True)
-        print(r.status_code)
-        if (r.status_code == 200):
-            res = r.json()
-            emotions = res[0]['faceAttributes']['emotion']
-            overpowered_emotion = 0.0
-            for i in emotions:
-                if emotions[i] > overpowered_emotion:
-                    overpowered_emotion = emotions[i]
-            print(r.json())
-            print(overpowered_emotion)
-            return overpowered_emotion
+        KEY = config.AzureAPIKey  # Replace with a valid Subscription Key here.
+        CF.Key.set(KEY)
+
+        BASE_URL = 'https://westus.api.cognitive.microsoft.com/face/v1.0/detect'  # Replace with your regional Base URL
+        CF.BaseUrl.set(BASE_URL)
+
+        img_url = 'https://pbs.twimg.com/profile_images/1034484319866302472/O8nhACsb_400x400.jpg'
+        result = CF.face.detect(img_url)
     except:
         print('unable to pull emotions from image')
 def createplaylist(token, username, overpowered_emotion):
